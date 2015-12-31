@@ -1,0 +1,29 @@
+{
+  "name": "cb2p",
+  "version": "1.0.0",
+  "description": "Convert node-style callback function to Promise APIs style.",
+  "main": "cb2p.js",
+  "scripts": {
+    "test": "test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/purplestone/cb2p.git"
+  },
+  "keywords": [
+    "callback",
+    "function",
+    "promise",
+    "then",
+    "catch"
+  ],
+  "author": "gaoyuan.ggg@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/purplestone/cb2p/issues"
+  },
+  "homepage": "https://github.com/purplestone/cb2p#readme",
+  "devDependencies": {
+    "qunit-color": "^1.15.0"
+  }
+}

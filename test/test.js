@@ -1,10 +1,9 @@
-
 var $$cb2p = require('../cb2p.js');
 var $$QTest = require('qunit-color');
 
 
 var oT = {
-	a : 'o.a',
+	a : 'oT.a',
 	getData : function (id, cb) {
 		var that = this;
 		var iTimeout = setTimeout(function() {
@@ -26,13 +25,16 @@ var getData = function (id, cb) {
 	}, 100);
 };
 
+var oB = {
+	a : 'oB'
+};
 
 $$QTest.asyncTest('object method convert :', function (assert) {
 	
 	Promise.all([
 	
 		$$cb2p(oT, 'getData')(2).then(function (o) {
-			assert.equal(o, 'ok o.a 2', 'ok call ok o.a 2');
+			assert.equal(o, 'ok oT.a 2', 'ok call ok oT.a 2');
 		}).catch(function (err) {
 			assert.ok(false, 'err call not to catch'); 
 		})
@@ -40,7 +42,7 @@ $$QTest.asyncTest('object method convert :', function (assert) {
 		, $$cb2p(oT, 'getData')(22).then(function (o) {
 			assert.ok(false, 'ok call not to then');
 		}).catch(function (err) {
-			assert.equal(err, 'err o.a 22', 'err cass err o.a 22');
+			assert.equal(err, 'err oT.a 22', 'err cass err oT.a 22');
 		})
 	
 	]).then(function () {
@@ -74,9 +76,6 @@ $$QTest.asyncTest('function convert :', function (assert) {
 
 
 $$QTest.asyncTest('input this object convert :', function (assert) {
-	var oB = {
-		a : 'oB'
-	};
 	Promise.all([
 
 		$$cb2p(oB, oT.getData)(2).then(function (o) {
@@ -99,9 +98,6 @@ $$QTest.asyncTest('input this object convert :', function (assert) {
 });
 
 $$QTest.asyncTest('call/apply object convert :', function (assert) {
-	var oB = {
-		a : 'oB'
-	};
 	Promise.all([
 
 		$$cb2p(oT.getData).apply(oB, [2]).then(function (o) {
@@ -122,6 +118,66 @@ $$QTest.asyncTest('call/apply object convert :', function (assert) {
 	});
 
 });
+
+
+
+
+$$QTest.asyncTest('function.p2cb :', function (assert) {
+
+
+	var run = function () {
+		$$cb2p(getData).p2cb(2, function (err, o) {
+			if(err) {
+				assert.ok(false, 'not to catch');
+			}else{
+				assert.equal(o, 'ok 2', 'ok 2');
+			}
+			$$QTest.start();
+		});
+	};
+
+
+
+	$$cb2p(getData).p2cb(22, function (err, o) {
+		if(err) {
+			assert.equal(err, 'err 22', 'err 22');
+		}else{
+			assert.ok(false, 'not to then');
+		}
+		run();
+	});
+
+
+});
+
+
+$$QTest.asyncTest('obj.method.p2cb :', function (assert) {
+
+
+
+	var run = function () {
+		$$cb2p(oT, 'getData').p2cb(2, function (err, o) {
+			if(err) {
+				assert.ok(false, 'not to catch');
+			}else{
+				assert.equal(o, 'ok oT.a 2', 'ok oT.a 2');
+			}
+			$$QTest.start();
+		});
+	};
+
+	$$cb2p(oT, 'getData').p2cb(22, function (err, o) {
+		if(err) {
+			assert.equal(err, 'err oT.a 22', 'err oT.a 22');
+		}else{
+			assert.ok(false, 'not to then');
+		}
+		run();
+	});
+
+
+});
+
 
 $$QTest.load();
 

@@ -17,6 +17,10 @@ $$cb2p(require('fs').readdir)('./').then(function () {
 	console.log(arguments);
 });
 
+$$cb2p(require('fs').readdir).p2cb('./', function () {
+	console.log(arguments);
+});
+
 ```
 
 call object method:

@@ -12,27 +12,46 @@
 */
 
 'use strict';
-module.exports = function (f, ff) {return function () {var args = [].slice.call(arguments, 0), oThis = this;return new Promise(function (resolve , reject) {
+module.exports = function (obj, fn) {
+	var fR = function () {
+		var args = [].slice.call(arguments, 0), oThis = this;
+		return new Promise(function (resolve , reject) {
 
-	var aP = args.concat([function (err, o) {
-		if(err) {
-			reject(err);
+			var aP = args.concat([function (err, o) {
+				if(err) {
+					reject(err);
+				}else{
+					resolve(o);
+				}
+			}]);
+
+
+			if(fn) {
+				oThis = obj;
+				if(typeof fn !== 'function') {
+					fn = obj[fn];
+				}
+			}else{
+				fn = obj;
+			}
+			return fn.apply(oThis, aP);
+		});
+	};
+
+
+	fR.p2cb = function () {
+		var fOrg = fn;
+		if(fn) {
+			var oThis = obj;
+			if(typeof fn !== 'function') {
+				fOrg = obj[fn];
+			}
 		}else{
-			resolve(o);
+			fOrg = obj;
 		}
-	}]);
 
-
-	if(ff) {
-		oThis = f;
-		if(typeof ff === 'function') {
-			f = ff;
-		}else{
-			f = f[ff];
-		}
-	}
-	f.apply(oThis, aP);
-	
-	
-});};};
+		return fOrg.apply(oThis, arguments);
+	};
+	return fR;
+};
 

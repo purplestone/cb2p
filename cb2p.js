@@ -12,46 +12,59 @@
 */
 
 'use strict';
-module.exports = function (obj, fn) {
-	var fR = function () {
-		var args = [].slice.call(arguments, 0), oThis = this;
-		return new Promise(function (resolve , reject) {
+module.exports = (function () {
+	var sBackFunName = 'p2cb';
+	var _fun = function (obj, fn) {
 
-			var aP = args.concat([function (err, o) {
-				if(err) {
-					reject(err);
+		var fR = function () {
+			var args = [].slice.call(arguments, 0), oThis = this;
+			return new Promise(function (resolve , reject) {
+
+				var aP = args.concat([function (err, o) {
+					if(err) {
+						reject(err);
+					}else{
+						resolve(o);
+					}
+				}]);
+
+
+				if(fn) {
+					oThis = obj;
+					if(typeof fn !== 'function') {
+						fn = obj[fn];
+					}
 				}else{
-					resolve(o);
+					fn = obj;
 				}
-			}]);
+				return fn.apply(oThis, aP);
+			});
+		};
 
 
+		fR[sBackFunName] = function () {
+			var fOrg = fn;
 			if(fn) {
-				oThis = obj;
+				var oThis = obj;
 				if(typeof fn !== 'function') {
-					fn = obj[fn];
+					fOrg = obj[fn];
 				}
 			}else{
-				fn = obj;
+				fOrg = obj;
 			}
-			return fn.apply(oThis, aP);
-		});
+
+			return fOrg.apply(oThis, arguments);
+		};
+		return fR;
 	};
 
-
-	fR.p2cb = function () {
-		var fOrg = fn;
-		if(fn) {
-			var oThis = obj;
-			if(typeof fn !== 'function') {
-				fOrg = obj[fn];
-			}
-		}else{
-			fOrg = obj;
-		}
-
-		return fOrg.apply(oThis, arguments);
+	_fun.setBackFunName = function (s) {
+		sBackFunName = s;
 	};
-	return fR;
-};
+	
+
+	return _fun;
+}());
+	
+
 

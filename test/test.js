@@ -179,6 +179,36 @@ $$QTest.asyncTest('obj.method.p2cb :', function (assert) {
 });
 
 
+$$QTest.asyncTest('obj.method.setBackFun :', function (assert) {
+
+
+
+	var run = function () {
+	$$cb2p.setBackFunName('p2cb');
+		$$cb2p(oT, 'getData').p2cb(2, function (err, o) {
+			if(err) {
+				assert.ok(false, 'not to catch');
+			}else{
+				assert.equal(o, 'ok oT.a 2', 'ok oT.a 2');
+			}
+			$$QTest.start();
+		});
+	};
+
+	$$cb2p.setBackFunName('back');
+	$$cb2p(oT, 'getData').back(22, function (err, o) {
+		if(err) {
+			assert.equal(err, 'err oT.a 22', 'err oT.a 22');
+		}else{
+			assert.ok(false, 'not to then');
+		}
+		run();
+	});
+
+
+});
+
+
 $$QTest.load();
 
 

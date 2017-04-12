@@ -29,15 +29,17 @@ module.exports = (function () {
 				}]);
 
 
+				var fnToCall = fn
 				if(fn) {
 					oThis = obj;
 					if(typeof fn !== 'function') {
-						fn = obj[fn];
+						fnToCall = obj[fn];
 					}
 				}else{
-					fn = obj;
+					fnToCall = obj;
 				}
-				return fn.apply(oThis, aP);
+
+				return fnToCall.apply(oThis, aP);
 			});
 		};
 

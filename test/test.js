@@ -217,7 +217,7 @@ $$QTest.asyncTest('obj.method.p2cb.this:', function (assert) {
 			})
 			.then(function(o){
 				assert.equal(o, 'OK#2', '[run2] should OK');
-				assert.ok(beforeCbIsCalled, '[run1] beforeCb should be called');
+				assert.ok(beforeCbIsCalled, '[run2] beforeCb should be called');
 			}, function(err){
 				assert.ok(false, '[run2] No error should be caught');
 			})

@@ -47,6 +47,10 @@ $$cb2p(oTest.getData).call(oTest, 3).then(function () {
 	console.log(arguments);
 });
 
+$$cb2p(oTest.getData).bind(oTest)(3).then(function () {
+	console.log(arguments);
+});
+
 ```
 
 

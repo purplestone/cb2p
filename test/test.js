@@ -30,13 +30,13 @@ var oB = {
 };
 
 $$QTest.asyncTest('object method convert :', function (assert) {
-	
+
 	Promise.all([
-	
+
 		$$cb2p(oT, 'getData')(2).then(function (o) {
 			assert.equal(o, 'ok oT.a 2', 'ok call ok oT.a 2');
 		}).catch(function (err) {
-			assert.ok(false, 'err call not to catch'); 
+			assert.ok(false, 'err call not to catch');
 		})
 
 		, $$cb2p(oT, 'getData')(22).then(function (o) {
@@ -44,7 +44,7 @@ $$QTest.asyncTest('object method convert :', function (assert) {
 		}).catch(function (err) {
 			assert.equal(err, 'err oT.a 22', 'err cass err oT.a 22');
 		})
-	
+
 	]).then(function () {
 		$$QTest.start();
 	});
@@ -178,6 +178,60 @@ $$QTest.asyncTest('obj.method.p2cb :', function (assert) {
 
 });
 
+$$QTest.asyncTest('obj.method.p2cb.this:', function (assert) {
+	var obj = {
+		foo: function(id, beforeCb, cb){
+			beforeCb.call(this)
+			cb.call(this, null, 'OK#' + id)
+		}
+	}
+
+	obj.foo = $$cb2p(obj.foo)
+
+	var run1 = function(){
+		var beforeCbIsCalled = false
+		obj.foo(1, function(){
+				beforeCbIsCalled = true
+				assert.ok(this === obj, '[run1] this should equal obj');
+			})
+			.then(function(o){
+				assert.equal(o, 'OK#1', '[run1] should OK');
+				assert.ok(beforeCbIsCalled, '[run1] beforeCb should be called');
+			}, function(err){
+				assert.ok(false, '[run1] No error should be caught');
+			})
+			.catch(function(err){
+				console.error(err)
+				assert.ok(false, '[run1]  No error should be caught2');
+			})
+			.then(function(){
+				run2()
+			});
+	}
+
+	var run2 = function(){
+		var beforeCbIsCalled = false
+		obj.foo(2, function(){
+				beforeCbIsCalled = true
+				assert.ok(this === obj, '[run2] this should equal obj');
+			})
+			.then(function(o){
+				assert.equal(o, 'OK#2', '[run2] should OK');
+				assert.ok(beforeCbIsCalled, '[run2] beforeCb should be called');
+			}, function(err){
+				assert.ok(false, '[run2] No error should be caught');
+			})
+			.catch(function(err){
+				console.error(err)
+				assert.ok(false, '[run2]  No error should be caught2');
+			})
+			.then(function(){
+				$$QTest.start();
+			});
+	}
+
+	run1()
+});
 
 $$QTest.asyncTest('obj.method.setBackFun :', function (assert) {
 
@@ -210,5 +264,3 @@ $$QTest.asyncTest('obj.method.setBackFun :', function (assert) {
 
 
 $$QTest.load();
-
-

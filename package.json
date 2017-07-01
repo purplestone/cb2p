@@ -4,7 +4,7 @@
   "description": "Convert node-style callback function to Promise APIs style.",
   "main": "cb2p.js",
   "scripts": {
-    "test": "test/test.js"
+    "test": "node test/test.js"
   },
   "repository": {
     "type": "git",
